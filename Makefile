@@ -7,8 +7,8 @@ BOOTIMG:=/usr/local/grub/lib/grub/i386-pc/boot.img
 GRUBLOC:=/usr/local/grub/bin/
 else
 PREFIX:=
-BOOTIMG:=/usr/lib/grub/i386-pc/boot.img
-GRUBLOC :=
+BOOTIMG:=/usr/local/grub/lib/grub/i386-pc/boot.img
+GRUBLOC :=/usr/local/grub/bin/
 endif
 
 CC := $(PREFIX)gcc
@@ -18,6 +18,8 @@ OBJCOPY := $(PREFIX)objcopy
 SIZE := $(PREFIX)size
 CONFIGS := -DCONFIG_HEAP_SIZE=4096
 CFLAGS := -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall 
+
+QEMU := qemu-system-x86_64
 
 ODIR = obj
 SDIR = src
@@ -59,7 +61,7 @@ rootfs.img:
 
 
 run:
-	qemu-system-i386 -hda rootfs.img
+	$(QEMU) -cpu qemu32 -m 512M -hda rootfs.img
 
 debug:
 	./launch_qemu.sh
