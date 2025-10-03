@@ -26,13 +26,14 @@ SDIR = src
 
 OBJS = \
 	kernel_main.o \
+	rprintf.o \
 
 # Make sure to keep a blank line here after OBJS list
 
 OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
 
-$(ODIR)/%.o: $(SDIR)/%.c
-	$(CC) $(CFLAGS) -c -g -o $@ $^
+$(ODIR)/%.o: $(SDIR)/%.c | $(ODIR)
+	$(CC) $(CFLAGS) -I$(SDIR) -c -g -o $@ $<
 
 $(ODIR)/%.o: $(SDIR)/%.s
 	$(CC) $(CFLAGS) -c -g -o $@ $^
@@ -41,7 +42,7 @@ $(ODIR)/%.o: $(SDIR)/%.s
 all: bin rootfs.img
 
 bin: obj $(OBJ)
-	$(LD) -melf_i386  obj/* -Tkernel.ld -o kernel
+	$(LD) -melf_i386 $(OBJ) -Tkernel.ld -o kernel
 	$(SIZE) kernel
 
 obj:

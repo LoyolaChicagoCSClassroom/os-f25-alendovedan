@@ -17,6 +17,46 @@ uint8_t inb (uint16_t _port) {
 #define VGA_MEMORY 0xB8000
 #define DEFAULT_COLOR 7
 
+unsigned char keyboard_map[128] =
+{
+   0,  27, '1', '2', '3', '4', '5', '6', '7', '8',     /* 9 */
+ '9', '0', '-', '=', '\b',     /* Backspace */
+ '\t',                 /* Tab */
+ 'q', 'w', 'e', 'r',   /* 19 */
+ 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', /* Enter key */
+   0,                  /* 29   - Control */
+ 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',     /* 39 */
+'\'', '`',   0,                /* Left shift */
+'\\', 'z', 'x', 'c', 'v', 'b', 'n',                    /* 49 */
+ 'm', ',', '.', '/',   0,                              /* Right shift */
+ '*',
+   0,  /* Alt */
+ ' ',  /* Space bar */
+   0,  /* Caps lock */
+   0,  /* 59 - F1 key ... > */
+   0,   0,   0,   0,   0,   0,   0,   0,  
+   0,  /* < ... F10 */
+   0,  /* 69 - Num lock*/
+   0,  /* Scroll Lock */
+   0,  /* Home key */
+   0,  /* Up Arrow */
+   0,  /* Page Up */
+ '-',
+   0,  /* Left Arrow */
+   0,  
+   0,  /* Right Arrow */
+ '+',
+   0,  /* 79 - End key*/
+   0,  /* Down Arrow */
+   0,  /* Page Down */
+   0,  /* Insert Key */
+   0,  /* Delete Key */
+   0,   0,   0,  
+   0,  /* F11 Key */
+   0,  /* F12 Key */
+   0,  /* All other keys are undefined */
+};
+
 struct termbuf {
     char ascii;
     char color;
@@ -79,6 +119,26 @@ void main() {
     esp_printf(putc, "Decimal: %d  Hex: %x  Char: %c  String: %s\r\n",
                12345, 0xBEEF, 'A', "Hello esp_printf!");
 
-    while (1);  // stop here
+   esp_printf(putc, "\n"); 	
+
+while(1) {
+    // Read the PS/2 controller status register at port 0x64
+    	uint8_t status = inb(0x64);
+
+    // Check if the output buffer is full (LSB = 1)
+    // If LSB is set, a new keyboard scancode is available
+   	if(status & 1) {
+        // Read the scancode from the PS/2 data port (0x60)
+        uint8_t scancode = inb(0x60);
+
+    // Ignore invalid scancodes that are out of bounds for our mapping table
+        if (scancode >= 128) {
+            continue;
+        }
+
+        // Print the scancode in hexadecimal and the corresponding key from the keyboard map
+        esp_printf(putc, "%x=%c | ", scancode, keyboard_map[scancode]);
+    }
 }
 
+}
