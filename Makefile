@@ -36,30 +36,6 @@ $(ODIR)/%.o: $(SDIR)/%.c | $(ODIR)
 $(ODIR)/%.o: $(SDIR)/%.s
         $(CC) $(CFLAGS) -c -g -o $@ $^
 
-
-all: bin rootfs.img
-
-bin: obj $(OBJ)
-        $(LD) -melf_i386 $(OBJ) -Tkernel.ld -o kernel
-        $(SIZE) kernel
-
-ODIR = obj
-SDIR = src
-
-OBJS = \
-        kernel_main.o \
-        rprintf.o
-# Make sure to keep a blank line here after OBJS list
-
-OBJ = $(patsubst %,$(ODIR)/%,$(OBJS))
-
-$(ODIR)/%.o: $(SDIR)/%.c | $(ODIR)
-        $(CC) $(CFLAGS) -I$(SDIR) -c -g -o $@ $<
-
-$(ODIR)/%.o: $(SDIR)/%.s
-        $(CC) $(CFLAGS) -c -g -o $@ $^
-
-
 all: bin rootfs.img
 
 bin: obj $(OBJ)
@@ -81,6 +57,7 @@ rootfs.img:
         mcopy -i rootfs.img@@1M grub.cfg ::/boot
         @echo " -- BUILD COMPLETED SUCCESSFULLY --"
 
+
 run:
         $(QEMU) -cpu qemu32 -m 512M -hda rootfs.img
 
@@ -89,11 +66,4 @@ debug:
 
 clean:
         rm -f grub.img kernel rootfs.img obj/*
-                              
-
-
-
-
-
-                                                              1,0-1         Top
-
+                                                                                                                          70,2-9        Bot
