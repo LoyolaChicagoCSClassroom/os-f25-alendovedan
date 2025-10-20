@@ -1,6 +1,7 @@
 
 #include <stdint.h>
 #include "rprintf.h"  // for esp_printf
+#include "page.h"
 
 #define MULTIBOOT2_HEADER_MAGIC         0xe85250d6
 

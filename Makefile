@@ -17,8 +17,7 @@ OBJDUMP := $(PREFIX)objdump
 OBJCOPY := $(PREFIX)objcopy
 SIZE := $(PREFIX)size
 CONFIGS := -DCONFIG_HEAP_SIZE=4096
-CFLAGS := -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall 
-
+CFLAGS := -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall -Isrc
 QEMU := qemu-system-x86_64
 
 ODIR = obj
@@ -27,6 +26,7 @@ SDIR = src
 OBJS = \
 	kernel_main.o \
 	rprintf.o \
+	page.o \
 
 # Make sure to keep a blank line here after OBJS list
 
