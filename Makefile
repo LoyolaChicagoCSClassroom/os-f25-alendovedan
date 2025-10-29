@@ -27,6 +27,7 @@ OBJS = \
 	kernel_main.o \
 	rprintf.o \
 	page.o \
+	paging.o \
 
 # Make sure to keep a blank line here after OBJS list
 
@@ -62,10 +63,10 @@ rootfs.img:
 
 
 run:
-	$(QEMU) -cpu qemu32 -m 512M -hda rootfs.img
+	$(QEMU) -cpu qemu32 -m 512M -hda rootfs.img -monitor stdio
 
 debug:
-	./launch_qemu.sh
+	$(QEMU) -cpu qemu32 -m 512M -hda rootfs.img -S -s -monitor stdio
 
 clean:
 	rm -f grub.img kernel rootfs.img obj/*
